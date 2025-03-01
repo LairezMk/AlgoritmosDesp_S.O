@@ -1,80 +1,100 @@
+from CTkMessagebox import CTkMessagebox
+import customtkinter as ctk
 import matplotlib.pyplot as plt
 import numpy as np
-import tkinter as tk
 import pygame
-from ttkthemes import ThemedTk
+from PIL import Image
 
+class App(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+        ctk.set_appearance_mode("dark")  # Modo oscuro para una apariencia más moderna
+        ctk.set_default_color_theme("Hades.json")
         
-class App:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Algoritmos de Procesos")
-        self.root.geometry("800x600")
-        self.root.resizable(False, False)
-        self.root.config(bg="black")
-
-        self.label = tk.Label(self.root, text="Algoritmos de Procesos", font=("Arial", 20), bg="black", fg="white")
+        
+        self.title("Algoritmos de Procesos")
+        self.geometry("800x600")
+        self.resizable(False, False)
+        
+        self.label = ctk.CTkLabel(self, text="Algoritmos de Procesos", font=("Arial", 24))
         self.label.pack(pady=20)
-
-        self.button_iniciar = tk.Button(self.root, text="Iniciar", font=("Arial", 15), bg="black", fg="white", command=self.abrir_grafica)
+        
+        self.button_iniciar = ctk.CTkButton(self, text="Iniciar", font=("Arial", 18), command=self.abrir_grafica)
         self.button_iniciar.pack(pady=20)
-
-        self.button_salir = tk.Button(self.root, text="Salir", font=("Arial", 15), bg="black", fg="white", command=self.root.quit)
+        
+        self.button_salir = ctk.CTkButton(self, text="Salir", font=("Arial", 18), fg_color="red", hover_color="darkred", command=self.on_closing)
         self.button_salir.pack(pady=20)
 
-    def abrir_grafica(self):
-        self.root.withdraw()  # Oculta la ventana principal
         
-        # Crea una nueva instancia de la clase 'Grafica'
-        self.grafica_window = Grafica(self.root)
+        
+        self.set_icon("Windows.jpg")
+    
+    def abrir_grafica(self):
+        self.withdraw()  # Oculta la ventana principal
+        Grafica(self)
+    
+    def on_closing(self):
+        msg = CTkMessagebox(title="Exit?", message="Do you want to close the program?",
+                        icon="question", option_1="Cancel", option_2="No", option_3="Yes")
+        response = msg.get()
+    
+        if response=="Yes":
+            pygame.mixer.init()
+            pygame.mixer.music.load("mario64.mp3")
+            pygame.mixer.music.play()
+            self.after(1000, self.quit)  # Cierra toda la aplicación
+            #app.destroy()
 
+        else:
+            print("Click 'Yes' to exit!")
+            
+    def set_icon(self, icon_path):
+        try:
+            img = Image.open(icon_path)
+            self.iconphoto(False, ctk.CTkImage(light_image=img, size=(32, 32)))
+        except Exception as e:
+            print(f"Error cargando el icono: {e}")
 
-class Grafica:
+class Grafica(ctk.CTkToplevel):
     def __init__(self, root):
-        self.root = tk.Toplevel(root)  # Crea una nueva ventana de tipo Toplevel, es decir, una ventana secundaria
-        self.root.title("Graficar")
-        self.root.geometry("800x600")
-        self.root.resizable(False, False)
-        self.root.config(bg="black")
-
-        self.label = tk.Label(self.root, text="Ingrese la cantidad de procesos que desea ejecutar (máximo 10)", font=("Arial", 20), bg="black", fg="white")
-        self.label.pack(padx=10, pady=10)
-
-        self.num_procesos = tk.Entry(self.root, font=("Arial", 20))
-        self.num_procesos.pack(padx=10, pady=10)
-
-        self.button_ejecutar = tk.Button(self.root, text="Ejecutar Algoritmo", font=("Arial", 15), bg="black", fg="white", command=self.ejecutar_algoritmo)
+        super().__init__(root)
+        self.root = root
+        self.title("Graficar")
+        self.geometry("800x600")
+        self.resizable(False, False)
+        
+        self.label = ctk.CTkLabel(self, text="Ingrese la cantidad de procesos (máx 10)", font=("Arial", 20))
+        self.label.pack(pady=20)
+        
+        self.num_procesos = ctk.CTkEntry(self, font=("Arial", 20))
+        self.num_procesos.pack(pady=10)
+        
+        self.button_ejecutar = ctk.CTkButton(self, text="Ejecutar Algoritmo", font=("Arial", 15), command=self.ejecutar_algoritmo)
         self.button_ejecutar.pack(pady=20)
-
-        self.button_volver = tk.Button(self.root, text="Volver al inicio", font=("Arial", 15), bg="black", fg="white", command=self.volver_inicio)
+        
+        self.button_volver = ctk.CTkButton(self, text="Volver al inicio", font=("Arial", 15), fg_color="gray", hover_color="darkgray", command=self.volver_inicio)
         self.button_volver.pack(pady=20)
-
+    
     def ejecutar_algoritmo(self):
         try:
-            num_procesos = int(self.num_procesos.get())  # Obtener el número de procesos
-            if num_procesos <= 10:
-                self.mostrar_animacion(num_procesos)  # Ejecutar animación
+            num_procesos = int(self.num_procesos.get())
+            if 1 <= num_procesos <= 10:
+                self.mostrar_animacion(num_procesos)
             else:
-                print("Por favor, ingrese un número de procesos válido (máximo 10).")
+                CTkMessagebox(title="Error", message="Ingrese un número entre 1 y 10.")
         except ValueError:
-            print("Por favor, ingrese un número válido.")
-
+            CTkMessagebox(title="Error", message="Ingrese un número válido.")
+    
     def mostrar_animacion(self, num_procesos):
-        # Aquí puedes agregar el código para la animación de los algoritmos
-        print(f"Ejecutando animación con {num_procesos} procesos.")  # Ejemplo de mensaje
-
-        # Puedes utilizar matplotlib o cualquier otro medio para la animación aquí
         plt.figure()
         plt.plot(np.random.rand(10))
         plt.title(f"Animación con {num_procesos} procesos")
         plt.show()
-
-    def volver_inicio(self):
-        self.root.destroy()  # Cierra la ventana de 'Grafica'
-        self.root.master.deiconify()  # Muestra la ventana principal de nuevo
     
-
-if __name__ =="__main__":
-    root = ThemedTk(theme="arc")
-    app = App(root)
-    root.mainloop()
+    def volver_inicio(self):
+        self.destroy()
+        self.root.deiconify()
+        
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
