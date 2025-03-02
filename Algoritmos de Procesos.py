@@ -1,28 +1,39 @@
 from CTkMessagebox import CTkMessagebox
 import customtkinter as ctk
+from customtkinter import *
 import matplotlib.pyplot as plt
 import numpy as np
 import pygame
-from PIL import Image
+from PIL import Image, ImageTk
 
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
-        ctk.set_appearance_mode("dark")  # Modo oscuro para una apariencia más moderna
+        ctk.set_appearance_mode("light")  # Modo oscuro para una apariencia más moderna
         ctk.set_default_color_theme("Hades.json")
-        
-        
         self.title("Algoritmos de Procesos")
-        self.geometry("800x600")
+        self.geometry("600x480")
         self.resizable(False, False)
+
+        side_img_data = Image.open("side-img.png")
+        side_img = CTkImage(dark_image=side_img_data, light_image=side_img_data, size=(600, 100))  # Ajustamos el tamaño de la imagen
+
+        # Agregar la imagen en la parte superior
+        CTkLabel(self, text="", image=side_img).pack(fill="x", side="top")
+
+        frame = ctk.CTkFrame(self, width=600, height=380, fg_color="gray")
+        frame.pack_propagate(0)  # Evita que el frame se redimensione
+        frame.pack(fill="both", expand=True)
         
-        self.label = ctk.CTkLabel(self, text="Algoritmos de Procesos", font=("Arial", 24))
+
+        # Título
+        self.label = ctk.CTkLabel(master=frame, text="Algoritmos de Procesos", font=("Arial", 24))
         self.label.pack(pady=20)
         
-        self.button_iniciar = ctk.CTkButton(self, text="Iniciar", font=("Arial", 18), command=self.abrir_grafica)
+        self.button_iniciar = ctk.CTkButton(master=frame, text="Iniciar", font=("Arial", 18), command=self.abrir_grafica)
         self.button_iniciar.pack(pady=20)
         
-        self.button_salir = ctk.CTkButton(self, text="Salir", font=("Arial", 18), fg_color="red", hover_color="darkred", command=self.on_closing)
+        self.button_salir = ctk.CTkButton(master=frame, text="Salir", font=("Arial", 18), fg_color="red", hover_color="darkred", command=self.on_closing)
         self.button_salir.pack(pady=20)
 
         
@@ -51,7 +62,9 @@ class App(ctk.CTk):
     def set_icon(self, icon_path):
         try:
             img = Image.open(icon_path)
-            self.iconphoto(False, ctk.CTkImage(light_image=img, size=(32, 32)))
+            img = img.resize((32, 32), Image.Resampling.LANCZOS)  # Redimensiona la imagen
+            photo = ImageTk.PhotoImage(img)
+            self.iconphoto(False, photo)
         except Exception as e:
             print(f"Error cargando el icono: {e}")
 
@@ -72,14 +85,15 @@ class Grafica(ctk.CTkToplevel):
         self.button_ejecutar = ctk.CTkButton(self, text="Ejecutar Algoritmo", font=("Arial", 15), command=self.ejecutar_algoritmo)
         self.button_ejecutar.pack(pady=20)
         
-        self.button_volver = ctk.CTkButton(self, text="Volver al inicio", font=("Arial", 15), fg_color="gray", hover_color="darkgray", command=self.volver_inicio)
-        self.button_volver.pack(pady=20)
+        #self.button_volver = ctk.CTkButton(self, text="Volver al inicio", font=("Arial", 15), fg_color="gray", hover_color="darkgray", command=self.volver_inicio)
+        #self.button_volver.pack(pady=20)
     
     def ejecutar_algoritmo(self):
         try:
             num_procesos = int(self.num_procesos.get())
             if 1 <= num_procesos <= 10:
-                self.mostrar_animacion(num_procesos)
+                self.pedir_datos(num_procesos)
+                #self.mostrar_animacion(num_procesos)
             else:
                 CTkMessagebox(title="Error", message="Ingrese un número entre 1 y 10.")
         except ValueError:
@@ -90,10 +104,113 @@ class Grafica(ctk.CTkToplevel):
         plt.plot(np.random.rand(10))
         plt.title(f"Animación con {num_procesos} procesos")
         plt.show()
-    
+
+    def pedir_datos(self, num_procesos):
+        #Lista procesos
+        self.withdraw()
+        Procesos(self.root, num_procesos)
+        
+
+class Procesos(ctk.CTkToplevel):
+    def __init__(self, root, num_procesos):
+        super().__init__(root)
+        self.title("Procesos")
+        self.geometry("800x600")
+        self.resizable(False, False)
+        self.root= root
+
+        # On closing
+        self.protocol("WM_DELETE_WINDOW", self.volver_inicio)
+
+        self.num_procesos = num_procesos
+        self.proceso_actual = 0
+        self.Lprocesos = []  # Lista de procesos
+
+        # Crear la interfaz
+        self.label_titulo = ctk.CTkLabel(self, text="", font=("Arial", 20))
+        self.label_titulo.pack(pady=10)
+
+        self.label_nombre = ctk.CTkLabel(self, text="Ingrese el nombre del proceso:", font=("Arial", 15))
+        self.label_nombre.pack(pady=5)
+        #Hacer que el nombre solo pueda ser de maximo 2 caracteres
+        self.entry_nombre = ctk.CTkEntry(self, font=("Arial", 15))
+        self.entry_nombre.pack(pady=5)
+
+        self.label_llegada = ctk.CTkLabel(self, text="Ingrese el tiempo de llegada del proceso:", font=("Arial", 15))
+        self.label_llegada.pack(pady=5)
+        self.entry_llegada = ctk.CTkEntry(self, font=("Arial", 15))
+        self.entry_llegada.pack(pady=5)
+
+        self.label_rafaga = ctk.CTkLabel(self, text="Ingrese la ráfaga del proceso:", font=("Arial", 15))
+        self.label_rafaga.pack(pady=5)
+        self.entry_rafaga = ctk.CTkEntry(self, font=("Arial", 15))
+        self.entry_rafaga.pack(pady=5)
+
+        self.label_prioridad = ctk.CTkLabel(self, text="Ingrese la prioridad del proceso:", font=("Arial", 15))
+        self.label_prioridad.pack(pady=5)
+        self.entry_prioridad = ctk.CTkEntry(self, font=("Arial", 15))
+        self.entry_prioridad.pack(pady=5)
+
+        self.boton_guardar = ctk.CTkButton(self, text="Guardar", font=("Arial", 15), command=self.guardar_proceso)
+        self.boton_guardar.pack(pady=20)
+
+        self.actualizar_interfaz()
+
+    def actualizar_interfaz(self):
+        """Actualiza la interfaz para el proceso actual"""
+        self.proceso_actual += 1
+        if self.proceso_actual > self.num_procesos:
+            self.mostrar_resumen()
+            return
+
+        self.label_titulo.configure(text=f"Ingresando el proceso {self.proceso_actual}/{self.num_procesos}")
+
+        # Limpiar los campos de entrada
+        self.entry_nombre.delete(0, "end")
+        self.entry_llegada.delete(0, "end")
+        self.entry_rafaga.delete(0, "end")
+        self.entry_prioridad.delete(0, "end")
+
+    def guardar_proceso(self):
+        """Guarda el proceso actual y actualiza la interfaz para el siguiente"""
+        nombre = self.entry_nombre.get().strip() #El .strip elimina los espacios en blanco
+        llegada = self.entry_llegada.get().strip()
+        rafaga = self.entry_rafaga.get().strip()
+        prioridad = self.entry_prioridad.get().strip()
+
+        # Validaciones básicas
+        if not nombre or not llegada.isdigit() or not rafaga.isdigit() or not prioridad.isdigit():
+            CTkMessagebox(title="Error", message="Por favor, ingrese valores válidos.")
+            return
+
+        self.Lprocesos.append({
+            "Nombre": nombre,
+            "Tiempo de llegada": int(llegada),
+            "Ráfaga": int(rafaga),
+            "Prioridad": int(prioridad)
+        })
+
+        if self.proceso_actual < self.num_procesos:
+            CTkMessagebox(title="Proceso Guardado", message=f"Proceso {self.proceso_actual} guardado con éxito.", icon="info")
+
+        self.actualizar_interfaz()
+
+    def mostrar_resumen(self):
+        mensaje = "Procesos ingresados:\n"
+        for i, proceso in enumerate(self.Lprocesos, start=1):
+            mensaje += (f"\nProceso {i}: {proceso['Nombre']}\n"
+                        f"  - Llegada: {proceso['Tiempo de llegada']}\n"
+                        f"  - Ráfaga: {proceso['Ráfaga']}\n"
+                        f"  - Prioridad: {proceso['Prioridad']}\n")
+
+        CTkMessagebox(title="Resumen de Procesos", message=mensaje, icon="info")
+        #self.destroy()  
+        self.volver_inicio()
+
     def volver_inicio(self):
         self.destroy()
         self.root.deiconify()
+    
         
 if __name__ == "__main__":
     app = App()
