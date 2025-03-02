@@ -23,22 +23,21 @@ class App(ctk.CTk):
         # Agregar la imagen en la parte superior
         CTkLabel(self, text="", image=side_img).pack(fill="x", side="top")
 
-        frame = ctk.CTkFrame(self, width=600, height=380, fg_color="gray")
+        frame = ctk.CTkFrame(self, width=600, height=380, fg_color="black")
         frame.pack_propagate(0)  # Evita que el frame se redimensione
-        frame.pack(fill="both", expand=True)
-        
+        frame.pack(fill="both", expand=True)  
 
         # Título
-        self.label = ctk.CTkLabel(master=frame, text="Algoritmos de Procesos", font=("Arial", 24))
+        self.label = ctk.CTkLabel(master=frame, text="Algoritmos de Procesos", font=("Arial", 24), text_color="white")
         self.label.pack(pady=20)
         
-        self.button_iniciar = ctk.CTkButton(master=frame, text="Iniciar", font=("Arial", 18), command=self.abrir_grafica)
+        self.button_iniciar = ctk.CTkButton(master=frame, text="Iniciar", font=("Arial", 18), fg_color="#ca04ca", border_width=2,
+                                            hover_color="#6a166a", border_color="white", command=self.abrir_grafica)
         self.button_iniciar.pack(pady=20)
         
-        self.button_salir = ctk.CTkButton(master=frame, text="Salir", font=("Arial", 18), fg_color="red", hover_color="darkred", command=self.on_closing)
+        self.button_salir = ctk.CTkButton(master=frame, text="Salir", font=("Arial", 18), fg_color="#ca04ca", border_width=2,
+                                            hover_color="#6a166a", border_color="white", command=self.on_closing)
         self.button_salir.pack(pady=20)
-
-        
 
         icon_fifo = CTkImage(Image.open("fifo.png"), size=(50, 50))
         icon_sjf = CTkImage(Image.open("sjf.png"), size=(50, 50))
@@ -54,16 +53,13 @@ class App(ctk.CTk):
         frame_info = ctk.CTkFrame(master=frame, fg_color="gray25", corner_radius=8)
         frame_info.pack(side="bottom", anchor="se", padx=5, pady=5)
 
-        label_autor = ctk.CTkLabel(frame_info, text="Desarrollado por:\nSamuel Herrera \nJonathan Gaviria", font=("Arial", 12), justify="left")
+        label_autor = ctk.CTkLabel(frame_info, text="Desarrollado por:\nSamuel Herrera \nJonathan Gaviria", font=("Arial", 12), justify="left",
+                                   text_color="white")
         label_autor.pack(padx=10, pady=5)
 
-        switch = ctk.CTkSwitch(master=frame, text="Modo Oscuro", command=self.cambiar_modo)
+        switch = ctk.CTkSwitch(master=frame, text="Modo Oscuro", command=self.cambiar_modo, font=("Arial", 14), 
+                               fg_color=["gray", "#6a166a"], bg_color="black", button_color="#ca04ca",corner_radius=10)
         switch.pack(pady=10)
-
-        
-
-
-
         
         self.set_icon("Windows.jpg")
 

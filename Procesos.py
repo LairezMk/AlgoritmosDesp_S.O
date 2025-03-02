@@ -40,7 +40,7 @@ def Fifo(procesos): #Funcion que implementa el algoritmo FIFO
 
     while (total > 0): #Mientras el tiempo total sea mayor a 0
 
-        pasar_segundo = True
+        pasar_segundo = True #Variable que me permite saber si puedo avanzar un segundo en el tiempo de ejecucion
 
         for proceso in fifo_list:
             if(tiempo_ejecucion >= proceso.tiempo_llegada): #Verifico si el proceso ya existe )
