@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pygame
 from PIL import Image, ImageTk
+from Procesos import Proceso
+from Graficas import Mostrar_Procesos
 
 class App(ctk.CTk):
     def __init__(self):
@@ -214,12 +216,7 @@ class Procesos(ctk.CTkToplevel):
             CTkMessagebox(title="Error", message="Por favor, ingrese valores válidos.")
             return
 
-        self.Lprocesos.append({
-            "Nombre": nombre,
-            "Tiempo de llegada": int(llegada),
-            "Ráfaga": int(rafaga),
-            "Prioridad": int(prioridad)
-        })
+        self.Lprocesos.append(Proceso(nombre, int(llegada), int(rafaga), int(prioridad)))
 
         if self.proceso_actual < self.num_procesos:
             CTkMessagebox(title="Proceso Guardado", message=f"Proceso {self.proceso_actual} guardado con éxito.", icon="info")
@@ -228,15 +225,17 @@ class Procesos(ctk.CTkToplevel):
 
     def mostrar_resumen(self):
         mensaje = "Procesos ingresados:\n"
-        for i, proceso in enumerate(self.Lprocesos, start=1):
-            mensaje += (f"\nProceso {i}: {proceso['Nombre']}\n"
-                        f"  - Llegada: {proceso['Tiempo de llegada']}\n"
-                        f"  - Ráfaga: {proceso['Ráfaga']}\n"
-                        f"  - Prioridad: {proceso['Prioridad']}\n")
+        for i in range(len(self.Lprocesos)):
+            proceso = self.Lprocesos[i]
+            mensaje += (f"\nProceso {i}: {proceso.nombre}\n"
+                        f"  - Llegada: {proceso.tiempo_llegada}\n"
+                        f"  - Ráfaga: {proceso.rafaga}\n"
+                        f"  - Prioridad: {proceso.prioridad}\n")
 
         CTkMessagebox(title="Resumen de Procesos", message=mensaje, icon="info")
         #self.destroy()  
-        self.volver_inicio()
+        #self.volver_inicio()
+        Mostrar_Procesos(self.Lprocesos)
 
     def volver_inicio(self):
         self.destroy()
