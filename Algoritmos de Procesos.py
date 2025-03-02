@@ -37,8 +37,39 @@ class App(ctk.CTk):
         self.button_salir.pack(pady=20)
 
         
+
+        icon_fifo = CTkImage(Image.open("fifo.png"), size=(50, 50))
+        icon_sjf = CTkImage(Image.open("sjf.png"), size=(50, 50))
+        icon_prio = CTkImage(Image.open("prioridad.png"), size=(50, 50))
+
+        frame_icons = ctk.CTkFrame(master=frame, fg_color="gray25", corner_radius=8)
+        frame_icons.pack(pady=10)
+
+        CTkLabel(frame_icons, text=" FIFO ", image=icon_fifo).pack(side="left", padx=10)
+        CTkLabel(frame_icons, text=" SJF ", image=icon_sjf).pack(side="left", padx=10)
+        CTkLabel(frame_icons, text=" Prioridad ", image=icon_prio).pack(side="left", padx=10)
+
+        frame_info = ctk.CTkFrame(master=frame, fg_color="gray25", corner_radius=8)
+        frame_info.pack(side="bottom", anchor="se", padx=5, pady=5)
+
+        label_autor = ctk.CTkLabel(frame_info, text="Desarrollado por:\nSamuel Herrera \nJonathan Gaviria", font=("Arial", 12), justify="left")
+        label_autor.pack(padx=10, pady=5)
+
+        switch = ctk.CTkSwitch(master=frame, text="Modo Oscuro", command=self.cambiar_modo)
+        switch.pack(pady=10)
+
+        
+
+
+
         
         self.set_icon("Windows.jpg")
+
+    def cambiar_modo(self):
+            if ctk.get_appearance_mode() == "Dark":
+                ctk.set_appearance_mode("Light")
+            else:
+                ctk.set_appearance_mode("Dark")
     
     def abrir_grafica(self):
         self.withdraw()  # Oculta la ventana principal
