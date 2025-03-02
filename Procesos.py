@@ -41,13 +41,13 @@ def Fifo(procesos): #Funcion que implementa el algoritmo FIFO
 
     while (total > 0): #Mientras el tiempo total sea mayor a 0
         for proceso in fifo_list:
-            if(tiempo_ejecucion >= proceso.tiempo_llegada): #Verifico si el proceso ya existe 
+            if(tiempo_ejecucion >= proceso.tiempo_llegada): #Verifico si el proceso ya existe )
+
+                proceso.tiempo_final = proceso.rafaga + tiempo_ejecucion #Calculo el tiempo final del proceso
                     
                 tiempo_espera += tiempo_ejecucion - proceso.tiempo_llegada #Calculo el tiempo de espera
                 tiempo_ejecucion += proceso.rafaga #Calculo el tiempo de ejecucion
-
-                #Estas me permiteran graficar el diagrama de Gantt
-                proceso.tiempo_final = proceso.rafaga + tiempo_ejecucion #Calculo el tiempo final del proceso
+                
                 proceso.tiempo_inicio = tiempo_ejecucion - proceso.rafaga #Calculo el tiempo de inicio del proceso
 
                 tiempo_sistema += tiempo_ejecucion - proceso.tiempo_llegada #Calculo el tiempo de sistema
@@ -57,8 +57,7 @@ def Fifo(procesos): #Funcion que implementa el algoritmo FIFO
                 fifo_list.remove(proceso) #Elimino el proceso de la lista
                 break
 
-    print("El tiempo de espera es :", tiempo_espera/4) #Imprimo el tiempo de espera
-    print("El tiempo de sistema es: ", tiempo_sistema/4) #Imprimo el tiempo de sistema
+    return procesos, tiempo_espera/4, tiempo_sistema/4
 
 def SJF(procesos): #Funcion que implementa el algoritmo SJF
 
@@ -69,7 +68,7 @@ def SJF(procesos): #Funcion que implementa el algoritmo SJF
 
     sjf_list.sort(key=lambda x: x.rafaga) #Ordeno la lista de procesos por rafaga
 
-    Fifo(sjf_list) #Llamo a la funcion FIFO    
+    return Fifo(sjf_list) #Llamo a la funcion FIFO  
 
 def Prioridad(procesos): #Funcion que implementa el algoritmo de prioridad
     for proceso in procesos: #Recorro la lista de procesos
@@ -82,6 +81,15 @@ def Prioridad(procesos): #Funcion que implementa el algoritmo de prioridad
 
     prioridad_list.sort(key=lambda x: x.prioridad) #Ordeno la lista de procesos por rafaga
 
-    Fifo(prioridad_list) #Llamo a la funcion
+    return Fifo(prioridad_list) #Llamo a la funcion
 
     #Nuevo Comentario
+
+#Ejemplo
+
+#procesos = [Procesos("P1", 0, 6), Procesos("P2", 1, 6), Procesos("P3", 2, 3)]
+
+#Fifo(procesos)
+
+
+
