@@ -106,7 +106,8 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
             self.label_prioridad.pack(pady=20)
 
 if __name__ == "__main__":
-    procesos = [Proceso("P1", 0, 6), Proceso("P2", 1, 6), Proceso("P3", 2, 3)]
+    #procesos = [Proceso("P1", 0, 6, 2), Proceso("P2", 1, 4, 1), Proceso("P3", 2, 2, 0), Proceso("P4", 3, 3, 1)]
+    procesos = [Proceso("P1", 1, 1, 1)]
     Mostrar_Procesos = Mostrar_Procesos(procesos)
     Mostrar_Procesos.mainloop()
 
