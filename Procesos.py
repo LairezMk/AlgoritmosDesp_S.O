@@ -33,13 +33,19 @@ def Fifo(procesos): #Funcion que implementa el algoritmo FIFO
     tiempo_espera = 0 #Me permite conocer el tiempo de espera de todos los procesos
     tiempo_sistema = 0 #Me permite conocer el tiempo de sistema de todos los procesos
     total = 0 #Me permite conocer el tiempo total de ejecucion de todos los procesos
+    
 
     for proceso in fifo_list:
         total += proceso.rafaga #Calculo el tiempo total de ejecucion de todos los procesos  
 
     while (total > 0): #Mientras el tiempo total sea mayor a 0
+
+        pasar_segundo = True
+
         for proceso in fifo_list:
             if(tiempo_ejecucion >= proceso.tiempo_llegada): #Verifico si el proceso ya existe )
+
+                pasar_segundo = False
 
                 proceso.tiempo_final = proceso.rafaga + tiempo_ejecucion #Calculo el tiempo final del proceso
                     
@@ -53,9 +59,13 @@ def Fifo(procesos): #Funcion que implementa el algoritmo FIFO
                 total -= proceso.rafaga #Resto el tiempo de ejecucion del proceso al tiempo total
                     
                 fifo_list.remove(proceso) #Elimino el proceso de la lista
+
                 break
 
-    return procesos, tiempo_espera/4, tiempo_sistema/4
+        if pasar_segundo:
+            tiempo_ejecucion += 1
+
+    return procesos, tiempo_espera/len(procesos), tiempo_sistema/len(procesos)
 
 def SJF(procesos): #Funcion que implementa el algoritmo SJF
 
