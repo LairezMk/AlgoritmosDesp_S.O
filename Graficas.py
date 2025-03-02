@@ -2,7 +2,7 @@ import pandas as pd
 import plotly.io as pio
 from PIL import Image, ImageTk
 import tkinter as tk
-import customtkinter as ctk  # Importar tkintercustom
+import customtkinter as ctk 
 from io import BytesIO
 import plotly.figure_factory as ff
 from Procesos import *
@@ -106,7 +106,7 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
             self.label_prioridad.pack(pady=20)
 
 if __name__ == "__main__":
-    procesos = [Procesos("P1", 0, 6), Procesos("P2", 1, 6), Procesos("P3", 2, 3)]
+    procesos = [Proceso("P1", 0, 6), Proceso("P2", 1, 6), Proceso("P3", 2, 3)]
     Mostrar_Procesos = Mostrar_Procesos(procesos)
     Mostrar_Procesos.mainloop()
 

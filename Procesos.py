@@ -1,14 +1,12 @@
-class Procesos:
-    def __init__(self, nombre, tiempo_llegada, rafaga):
+class Proceso:
+    def __init__(self, nombre, tiempo_llegada, rafaga, prioridad):
         self.nombre = nombre 
         self.tiempo_llegada = tiempo_llegada
         self.rafaga = rafaga
+        self.prioridad = prioridad
         self.tiempo_final = 0
         self.tiempo_inicio = 0
-        self.prioridad = 0
-
-    def set_prioridad(self):
-        self.prioridad = input(f"Que prioridad quiere tener el proceso {self.nombre}: ") #Definir priridad por teclado
+        
 
     def crear_proceso(self):
         self.nombre = input("Ingrese el nombre del proceso: ")
@@ -19,7 +17,7 @@ def crear_procesos():
     procesos = [] #Lista que me permitira almacenar los procesos
     cantidad_procesos = int(input("Cuantos procesos desea crear: ")) #Defino la cantidad de procesos que se crearan
     for i in range(cantidad_procesos): #Recorro la cantidad de procesos que se crearan
-        proceso = Procesos("", 0, 0) #Creo un objeto de la clase Procesos
+        proceso = Proceso("", 0, 0) #Creo un objeto de la clase Procesos
         proceso.crear_proceso() #Llamo al metodo crear_proceso
         procesos.append(proceso) #Agrego el proceso a la lista
     return procesos
@@ -71,8 +69,6 @@ def SJF(procesos): #Funcion que implementa el algoritmo SJF
     return Fifo(sjf_list) #Llamo a la funcion FIFO  
 
 def Prioridad(procesos): #Funcion que implementa el algoritmo de prioridad
-    for proceso in procesos: #Recorro la lista de procesos
-        proceso.set_prioridad() #Defino la prioridad de cada proceso
 
     prioridad_list = [] #Lista que me permitira almacenar los procesos
 
@@ -87,7 +83,7 @@ def Prioridad(procesos): #Funcion que implementa el algoritmo de prioridad
 
 #Ejemplo
 
-#procesos = [Procesos("P1", 0, 6), Procesos("P2", 1, 6), Procesos("P3", 2, 3)]
+#procesos = [Proceso("P1", 0, 6), Procesos("P2", 1, 6), Procesos("P3", 2, 3)]
 
 #Fifo(procesos)
 
