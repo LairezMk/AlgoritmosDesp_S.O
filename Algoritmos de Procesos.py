@@ -7,15 +7,20 @@ import pygame
 from PIL import Image, ImageTk
 from Procesos import Proceso
 from Graficas import Mostrar_Procesos
+import cv2
 
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         ctk.set_appearance_mode("light")  # Modo oscuro para una apariencia más moderna
-        ctk.set_default_color_theme("Hades.json")
+        #ctk.set_default_color_theme("Hades.json")
         self.title("Algoritmos de Procesos")
         self.geometry("600x480")
         self.resizable(False, False)
+
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+
 
         side_img_data = Image.open("side-img.png")
         side_img = CTkImage(dark_image=side_img_data, light_image=side_img_data, size=(600, 100))  # Ajustamos el tamaño de la imagen
@@ -23,7 +28,7 @@ class App(ctk.CTk):
         # Agregar la imagen en la parte superior
         CTkLabel(self, text="", image=side_img).pack(fill="x", side="top")
 
-        frame = ctk.CTkFrame(self, width=600, height=380, fg_color="black")
+        frame = ctk.CTkFrame(self, width=600, height=380, fg_color="gray25", corner_radius=0)
         frame.pack_propagate(0)  # Evita que el frame se redimensione
         frame.pack(fill="both", expand=True)  
 
@@ -57,8 +62,8 @@ class App(ctk.CTk):
                                    text_color="white")
         label_autor.pack(padx=10, pady=5)
 
-        switch = ctk.CTkSwitch(master=frame, text="Modo Oscuro", command=self.cambiar_modo, font=("Arial", 14), 
-                               fg_color=["gray", "#6a166a"], bg_color="black", button_color="#ca04ca",corner_radius=10)
+        switch = ctk.CTkSwitch(master=frame, text="Modo Oscuro", command=self.cambiar_modo, font=("Arial", 14), text_color="white", 
+                               fg_color=["gray", "#6a166a"], bg_color="gray25", button_color="#ca04ca",corner_radius=10)
         switch.pack(pady=10)
         
         self.set_icon("Windows.jpg")
@@ -83,7 +88,6 @@ class App(ctk.CTk):
             pygame.mixer.music.load("mario64.mp3")
             pygame.mixer.music.play()
             self.after(1000, self.quit)  # Cierra toda la aplicación
-            #app.destroy()
 
         else:
             print("Click 'Yes' to exit!")
@@ -114,8 +118,8 @@ class Grafica(ctk.CTkToplevel):
         self.button_ejecutar = ctk.CTkButton(self, text="Ejecutar Algoritmo", font=("Arial", 15), command=self.ejecutar_algoritmo)
         self.button_ejecutar.pack(pady=20)
         
-        #self.button_volver = ctk.CTkButton(self, text="Volver al inicio", font=("Arial", 15), fg_color="gray", hover_color="darkgray", command=self.volver_inicio)
-        #self.button_volver.pack(pady=20)
+        self.button_volver = ctk.CTkButton(self, text="Volver al inicio", font=("Arial", 15), fg_color="gray", hover_color="darkgray", command=self.volver_inicio)
+        self.button_volver.pack(pady=20)
     
     def ejecutar_algoritmo(self):
         try:
@@ -136,15 +140,19 @@ class Grafica(ctk.CTkToplevel):
 
     def pedir_datos(self, num_procesos):
         #Lista procesos
-        self.withdraw()
+        self.destroy()
         Procesos(self.root, num_procesos)
+
+    def volver_inicio(self):
+        self.destroy()
+        self.root.deiconify()
         
 
 class Procesos(ctk.CTkToplevel):
     def __init__(self, root, num_procesos):
         super().__init__(root)
         self.title("Procesos")
-        self.geometry("800x600")
+        self.geometry("800x1000")
         self.resizable(False, False)
         self.root= root
 
@@ -183,7 +191,19 @@ class Procesos(ctk.CTkToplevel):
         self.boton_guardar = ctk.CTkButton(self, text="Guardar", font=("Arial", 15), command=self.guardar_proceso)
         self.boton_guardar.pack(pady=20)
 
+        self.boton_volver= ctk.CTkButton(self, text="Volver al inicio", font=("Arial", 15), command=self.volver_inicio)
+        self.boton_volver.pack(pady=20)
+
+
+        #Sección para la ejecución del video
+        self.canvas=ctk.CTkCanvas(self, width=300, height=300)
+        self.canvas.pack(pady=20)
+        video=cv2.VideoCapture("shimmy.mp4")
+        self.video=video
+        self.actualizar_video()
         self.actualizar_interfaz()
+
+
 
     def actualizar_interfaz(self):
         """Actualiza la interfaz para el proceso actual"""
@@ -200,6 +220,26 @@ class Procesos(ctk.CTkToplevel):
         self.entry_rafaga.delete(0, "end")
         self.entry_prioridad.delete(0, "end")
 
+        
+
+
+    def actualizar_video(self):   
+        #Actualizar los fotogramas del video
+
+        ret, frame=self.video.read()
+
+        if ret:
+            frame=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame=Image.fromarray(frame)
+            frame=ImageTk.PhotoImage(frame)
+            self.canvas.create_image(0, 0, image=frame, anchor="nw")
+            self.canvas.image=frame
+            self.after(10, self.actualizar_video)
+        #Si no hay más fotogramas, se vuelve a reproducir el video
+        else:
+            self.video=cv2.VideoCapture("shimmy.mp4")
+            self.actualizar_video()
+
     def guardar_proceso(self):
         """Guarda el proceso actual y actualiza la interfaz para el siguiente"""
         nombre = self.entry_nombre.get().strip() #El .strip elimina los espacios en blanco
@@ -214,10 +254,17 @@ class Procesos(ctk.CTkToplevel):
 
         self.Lprocesos.append(Proceso(nombre, int(llegada), int(rafaga), int(prioridad)))
 
-        if self.proceso_actual < self.num_procesos:
-            CTkMessagebox(title="Proceso Guardado", message=f"Proceso {self.proceso_actual} guardado con éxito.", icon="info")
+        if self.proceso_actual <= self.num_procesos:
+            #Hacer que el mensaje de guardado desaparezca después de 2 segundos automaticamente
+            self.label_mensaje = ctk.CTkLabel(self, text="Proceso guardado correctamente.", font=("Arial", 14))
+            self.label_mensaje.pack(pady=5)
+            self.after(2000, self.label_mensaje.destroy)  # Desaparece en 2 segundos
+            #self.actualizar_interfaz()
+
+            #self.after(2000, self.actualizar_interfaz)
 
         self.actualizar_interfaz()
+        print(f"Voy en el proceso: {nombre}")
 
     def mostrar_resumen(self):
         mensaje = "Procesos ingresados:\n"
@@ -228,14 +275,16 @@ class Procesos(ctk.CTkToplevel):
                         f"  - Ráfaga: {proceso.rafaga}\n"
                         f"  - Prioridad: {proceso.prioridad}\n")
 
-        CTkMessagebox(title="Resumen de Procesos", message=mensaje, icon="info")
+        self.mensaje=CTkMessagebox(title="Resumen de Procesos", message=mensaje, icon="info", option_1="Ok")
         #self.destroy()  
         #self.volver_inicio()
-        Mostrar_Procesos(self.Lprocesos)
+        #Se muestran las graficas solo si se ha presionado el boton ok en el resumen de procesos
+        if self.mensaje.get()=="Ok":
+            Mostrar_Procesos(self.Lprocesos)
 
     def volver_inicio(self):
         self.destroy()
-        self.root.deiconify()
+        Grafica(self.root)
     
         
 if __name__ == "__main__":
