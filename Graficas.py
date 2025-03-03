@@ -6,6 +6,7 @@ import customtkinter as ctk
 from io import BytesIO
 import plotly.figure_factory as ff
 from Procesos import *
+import webbrowser
 
 class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gráficos
     def __init__(self, procesos):
@@ -67,6 +68,14 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
         fig.update_xaxes(title="Tiempo (segundos)", dtick=1)  # Especificar eje X como numérico
         fig.update_yaxes(title="Procesos")
 
+        #fig.show()
+        
+
+        #Obtener el link para abrir la gráfica en el navegador
+
+        pio.write_html(fig, file='gantt.html', auto_open=False)
+
+        
         # Convertir la gráfica a imagen
         img_bytes = pio.to_image(fig, format="png")
         img = Image.open(BytesIO(img_bytes))
@@ -84,6 +93,15 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
             self.label_fifo = ctk.CTkLabel(self.TabView.tab("FIFO"), text=f"Tiempo de sistema: {Fifo(procesos)[2]}")
             self.label_fifo.pack(pady=20)
 
+            #Crear un link para ver abrir el diagrama de gantt en el navegador, solo se ejecuta si se hace click en el link
+            self.link= ctk.CTkLabel(self.TabView.tab("FIFO"), text="Ver diagrama de Gantt", text_color="blue", cursor="hand2")
+            self.link.pack(pady=20)
+
+           # link=fig.show()
+
+            self.link.bind("<Button-1>", lambda e: webbrowser.open('gantt.html')) 
+
+
 
         elif algoritmo == "SJF":
             # Actualizar el label con la imagen en la pestaña SJF
@@ -95,6 +113,14 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
             self.label_sjf = ctk.CTkLabel(self.TabView.tab("SJF"), text=f"Tiempo de sistema: {SJF(procesos)[2]}")
             self.label_sjf.pack(pady=20)
 
+            #Crear un link para ver abrir el diagrama de gantt en el navegador, solo se ejecuta si se hace click en el link
+            self.link= ctk.CTkLabel(self.TabView.tab("SJF"), text="Ver diagrama de Gantt", text_color="blue", cursor="hand2")
+            self.link.pack(pady=20)
+
+           # link=fig.show()
+
+            self.link.bind("<Button-1>", lambda e: webbrowser.open('gantt.html')) 
+
         elif algoritmo == "Prioridad":
             # Actualizar el label con la imagen en la pestaña Prioridad
             self.labelprioridad.configure(image=img_tk, text="")
@@ -105,9 +131,17 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
             self.label_prioridad = ctk.CTkLabel(self.TabView.tab("Prioridad"), text=f"Tiempo de sistema: {Prioridad(procesos)[2]}")
             self.label_prioridad.pack(pady=20)
 
+            #Crear un link para ver abrir el diagrama de gantt en el navegador, solo se ejecuta si se hace click en el link
+            self.link= ctk.CTkLabel(self.TabView.tab("Prioridad"), text="Ver diagrama de Gantt", text_color="blue", cursor="hand2")
+            self.link.pack(pady=20)
+
+           # link=fig.show()
+
+            self.link.bind("<Button-1>", lambda e: webbrowser.open('gantt.html')) 
+
 if __name__ == "__main__":
-    #procesos = [Proceso("P1", 0, 6, 2), Proceso("P2", 1, 4, 1), Proceso("P3", 2, 2, 0), Proceso("P4", 3, 3, 1)]
-    procesos = [Proceso("P1", 1, 1, 1)]
+    procesos = [Proceso("P1", 0, 6, 2), Proceso("P2", 1, 4, 1), Proceso("P3", 2, 2, 0), Proceso("P4", 3, 3, 1)]
+    #procesos = [Proceso("P1", 1, 1, 1)]
     Mostrar_Procesos = Mostrar_Procesos(procesos)
     Mostrar_Procesos.mainloop()
 
