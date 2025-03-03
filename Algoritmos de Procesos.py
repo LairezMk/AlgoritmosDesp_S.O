@@ -59,11 +59,6 @@ class App(ctk.CTk):
 
         switch = ctk.CTkSwitch(master=frame, text="Modo Oscuro", command=self.cambiar_modo)
         switch.pack(pady=10)
-
-        
-
-
-
         
         self.set_icon("Windows.jpg")
 
@@ -239,9 +234,7 @@ class Procesos(ctk.CTkToplevel):
 
     def volver_inicio(self):
         self.destroy()
-        self.root.deiconify()
-    
-        
+        self.root.deiconify()   
 if __name__ == "__main__":
     app = App()
     app.mainloop()
