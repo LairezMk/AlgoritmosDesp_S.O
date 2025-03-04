@@ -3,6 +3,7 @@ import customtkinter as ctk
 from customtkinter import *
 import matplotlib.pyplot as plt
 import numpy as np
+from tkinter import font as tkFont
 import pygame
 from PIL import Image, ImageTk
 from Procesos import Proceso
@@ -15,8 +16,12 @@ class App(ctk.CTk):
         ctk.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
         ctk.set_default_color_theme("ThemeCoffee.json")
         self.title("Algoritmos de Procesos")
-        self.geometry("600x480")
+        self.geometry("600x550")
         self.resizable(False, False)
+        #tkFont.Font(family="Kanit", size=12)
+        self.fuente= CTkFont(family="Kanit\Kanit-Black.ttf", size=25, weight="bold")
+        self.fuente2= CTkFont(family="Lato", size=15, weight="bold")
+        fuente_aviso= CTkFont(family="Poppins", size=16, weight="bold")
 
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
@@ -31,14 +36,14 @@ class App(ctk.CTk):
         frame.pack(fill="both", expand=True)  
 
         # Título
-        self.label = ctk.CTkLabel(master=frame, text="Algoritmos de Procesos", font=("Bevan", 24))
+        self.label = ctk.CTkLabel(master=frame, text="Algoritmos de Procesos", font=self.fuente)
         self.label.pack(pady=20)
         
-        self.button_iniciar = ctk.CTkButton(master=frame, text="Iniciar", font=("Bevan", 18),
+        self.button_iniciar = ctk.CTkButton(master=frame, text="Iniciar", font=self.fuente2,
                                              command=self.abrir_grafica)
         self.button_iniciar.pack(pady=20)
         
-        self.button_salir = ctk.CTkButton(master=frame, text="Salir", font=("Bevan", 18),
+        self.button_salir = ctk.CTkButton(master=frame, text="Salir", font=self.fuente2,
                                           command=self.on_closing)
         self.button_salir.pack(pady=20)
 
@@ -56,11 +61,11 @@ class App(ctk.CTk):
         frame_info = ctk.CTkFrame(master=frame, corner_radius=8)
         frame_info.pack(side="bottom", anchor="se", padx=5, pady=5)
 
-        label_autor = ctk.CTkLabel(frame_info, text="Desarrollado por:\nSamuel Herrera \nJonathan Gaviria", font=("Bevan", 12), justify="left",
+        label_autor = ctk.CTkLabel(frame_info, text="Desarrollado por:\nSamuel Herrera \nJonathan Gaviria", font=fuente_aviso, justify="left",
                                    text_color="white")
         label_autor.pack(padx=10, pady=5)
 
-        switch = ctk.CTkSwitch(master=frame, text="Modo Oscuro", command=self.cambiar_modo, font=("Bevan", 14), text_color="white", 
+        switch = ctk.CTkSwitch(master=frame, text="Modo Oscuro", command=self.cambiar_modo, font=self.fuente2, text_color="white", 
                                corner_radius=10)
         switch.pack(pady=10)
         
@@ -77,11 +82,11 @@ class App(ctk.CTk):
         Grafica(self)
     
     def on_closing(self):
-        msg = CTkMessagebox(title="Exit?", message="Do you want to close the program?",
-                        icon="question", option_1="Cancel", option_2="No", option_3="Yes")
+        msg = CTkMessagebox(title="Salir?", message="Desea cerrar el programa?",
+                        icon="question", option_1="No", option_2="Si")
         response = msg.get()
     
-        if response=="Yes":
+        if response=="Si":
             pygame.mixer.init()
             pygame.mixer.music.load("mario64.mp3")
             pygame.mixer.music.play()
@@ -107,21 +112,25 @@ class Grafica(ctk.CTkToplevel):
         self.title("Graficar")
         self.geometry("600x350")
         self.resizable(False, False)
+        fuente = CTkFont(family="Kanit\Kanit-Black.ttf", size=20, weight="bold")
+        fuente_2= CTkFont(family="Lato", size=15, weight="bold")
+
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         frame = ctk.CTkFrame(self, width=580, height=330, border_width=2, border_color="white")
         frame.pack_propagate(0)  # Evita que el frame se redimensione
         frame.grid(row=0, column=0, padx=10, pady=10)
         
-        self.label = ctk.CTkLabel(master=frame, text="Ingrese la Cantidad de Procesos (máx 10)", font=("Bevan", 20))
+        self.label = ctk.CTkLabel(master=frame, text="Ingrese la Cantidad de Procesos (máx 10)", font=fuente)
         self.label.pack(pady=20)
         
         self.num_procesos = ctk.CTkEntry(master=frame, font=("Bevan", 20))
         self.num_procesos.pack(pady=10)
         
-        self.button_ejecutar = ctk.CTkButton(master=frame, text="Ejecutar Algoritmo", font=("Bevan", 15), command=self.ejecutar_algoritmo)
+        self.button_ejecutar = ctk.CTkButton(master=frame, text="Ejecutar Algoritmo", font=fuente_2, command=self.ejecutar_algoritmo)
         self.button_ejecutar.pack(pady=20)
         
-        self.button_volver = ctk.CTkButton(master=frame, text="Volver al inicio", font=("Bevan", 15), command=self.volver_inicio)
+        self.button_volver = ctk.CTkButton(master=frame, text="Volver al inicio", font=fuente_2, command=self.volver_inicio)
         self.button_volver.pack(pady=20)
     
     def ejecutar_algoritmo(self):
@@ -150,6 +159,17 @@ class Grafica(ctk.CTkToplevel):
         self.destroy()
         self.root.deiconify()
 
+    def on_closing(self):
+        msg = CTkMessagebox(title="Salir?", message="Desea cerrar el programa?",
+                        icon="question", option_1="No", option_2="Si")
+        response = msg.get()
+    
+        if response=="Si":
+            pygame.mixer.init()
+            pygame.mixer.music.load("mario64.mp3")
+            pygame.mixer.music.play()
+            self.after(1000, self.quit)  # Cierra toda la aplicación
+
 class Procesos(ctk.CTkToplevel):
     def __init__(self, root, num_procesos):
         super().__init__(root)
@@ -157,6 +177,9 @@ class Procesos(ctk.CTkToplevel):
         self.geometry("800x600")
         self.resizable(False, False)
         self.root= root
+
+        self.fuente1= CTkFont(family="Kanit\Kanit-Black.ttf", size=20, weight="bold")
+        self.fuente2= CTkFont(family="Lato", size=15, weight="bold")
 
         # On closing
         self.protocol("WM_DELETE_WINDOW", self.volver_inicio)
@@ -174,36 +197,36 @@ class Procesos(ctk.CTkToplevel):
         self.frameder.grid(row=0, column=1, padx=10, pady=10)
 
         # Crear la interfaz
-        self.label_titulo = ctk.CTkLabel(frameizq, text="", font=("Bevan", 20))
+        self.label_titulo = ctk.CTkLabel(frameizq, text="", font=self.fuente1)
         self.label_titulo.pack(pady=10)
 
-        self.label_nombre = ctk.CTkLabel(frameizq, text="Ingrese el nombre del proceso:", font=("Bevan", 15))
+        self.label_nombre = ctk.CTkLabel(frameizq, text="Ingrese el nombre del proceso:", font=self.fuente2)
         self.label_nombre.pack(pady=5)
         #Hacer que el nombre solo pueda ser de maximo 2 caracteres
-        self.entry_nombre = ctk.CTkEntry(frameizq, font=("Bevan", 15))
+        self.entry_nombre = ctk.CTkEntry(frameizq, font=self.fuente2)
         self.entry_nombre.pack(pady=5)
         vcmd = (self.register(self.validar_longitud), "%P")
         self.entry_nombre.configure(validate="key", validatecommand=vcmd)
 
-        self.label_llegada = ctk.CTkLabel(frameizq, text="Ingrese el tiempo de llegada del proceso:", font=("Bevan", 15))
+        self.label_llegada = ctk.CTkLabel(frameizq, text="Ingrese el tiempo de llegada del proceso:", font=self.fuente2)
         self.label_llegada.pack(pady=5)
         self.entry_llegada = ctk.CTkEntry(frameizq, font=("Bevan", 15))
         self.entry_llegada.pack(pady=5)
 
-        self.label_rafaga = ctk.CTkLabel(frameizq, text="Ingrese la ráfaga del proceso:", font=("Bevan", 15))
+        self.label_rafaga = ctk.CTkLabel(frameizq, text="Ingrese la ráfaga del proceso:", font=self.fuente2)
         self.label_rafaga.pack(pady=5)
         self.entry_rafaga = ctk.CTkEntry(frameizq, font=("Bevan", 15))
         self.entry_rafaga.pack(pady=5)
 
-        self.label_prioridad = ctk.CTkLabel(frameizq, text="Ingrese la prioridad del proceso:", font=("Bevan", 15))
+        self.label_prioridad = ctk.CTkLabel(frameizq, text="Ingrese la prioridad del proceso:", font=self.fuente2)
         self.label_prioridad.pack(pady=5)
         self.entry_prioridad = ctk.CTkEntry(frameizq, font=("Bevan", 15))
         self.entry_prioridad.pack(pady=5)
 
-        self.boton_guardar = ctk.CTkButton(frameizq, text="Guardar", font=("Bevan", 15), command=self.guardar_proceso)
+        self.boton_guardar = ctk.CTkButton(frameizq, text="Guardar", font=self.fuente2, command=self.guardar_proceso)
         self.boton_guardar.pack(pady=20)
 
-        self.boton_volver= ctk.CTkButton(frameizq, text="Volver al inicio", font=("Bevan", 15), command=self.volver_inicio)
+        self.boton_volver= ctk.CTkButton(frameizq, text="Volver al inicio", font=self.fuente2, command=self.volver_inicio)
         self.boton_volver.pack(pady=20)
 
         #Sección para la ejecución del video
@@ -243,7 +266,7 @@ class Procesos(ctk.CTkToplevel):
             self.mostrar_resumen()
             return
 
-        self.label_titulo.configure(text=f"Ingresando el proceso {self.proceso_actual}/{self.num_procesos}")
+        self.label_titulo.configure(text=f"Ingresando el proceso {self.proceso_actual}/{self.num_procesos}", font=self.fuente1)
 
         # Limpiar los campos de entrada
         self.entry_nombre.delete(0, "end")
@@ -297,7 +320,7 @@ class Procesos(ctk.CTkToplevel):
         mensaje = "Procesos ingresados:\n"
         for i in range(len(self.Lprocesos)):
             proceso = self.Lprocesos[i]
-            mensaje += (f"\nProceso {i}: {proceso.nombre}\n"
+            mensaje += (f"\nProceso {i+1}: {proceso.nombre}\n"
                         f"  - Llegada: {proceso.tiempo_llegada}\n"
                         f"  - Ráfaga: {proceso.rafaga}\n"
                         f"  - Prioridad: {proceso.prioridad}\n")
@@ -307,7 +330,16 @@ class Procesos(ctk.CTkToplevel):
         #self.volver_inicio()
         #Se muestran las graficas solo si se ha presionado el boton ok en el resumen de procesos
         if self.mensaje.get()=="Ok":
+            #self.withdraw()
             Mostrar_Procesos(self.Lprocesos)
+            #si se cierra la venta de Mostrar_Procesos, se quita el withraw y se muestra la ventana de Procesos
+            #if Mostrar_Procesos(self.Lprocesos).destroy():
+
+            #    self.deiconify()
+    
+
+            
+
 
     def volver_inicio(self):
         self.destroy()

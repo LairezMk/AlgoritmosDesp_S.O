@@ -7,6 +7,8 @@ from io import BytesIO
 import plotly.figure_factory as ff
 from Procesos import *
 import webbrowser
+from CTkMessagebox import CTkMessagebox
+import pygame
 
 class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gráficos
     def __init__(self, procesos):
@@ -15,6 +17,9 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
         self.geometry("800x800")
         self.resizable(False, False)
         self.procesos = procesos
+        self.fuente1= ctk.CTkFont(family="Lato", size=16, weight="bold")
+
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)  
 
         # Crear pestañas
         self.TabView = ctk.CTkTabview(self, width=750, height=550)
@@ -40,6 +45,8 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
         self.generar_grafica(self.procesos, "Prioridad")
 
     def generar_grafica(self, procesos, algoritmo):
+
+    
 
         if algoritmo == "FIFO":
             # Calcular el tiempo de espera y de sistema para el algoritmo FIFO
@@ -88,13 +95,13 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
             self.labelfifo.configure(image=img_tk, text="")
             self.labelfifo.pack(pady=20)
             #Crear un label para mostrar el tiempo de espera y de sistema
-            self.label_fifo = ctk.CTkLabel(self.TabView.tab("FIFO"), text=f"Tiempo de espera: {Fifo(procesos)[1]}")
+            self.label_fifo = ctk.CTkLabel(self.TabView.tab("FIFO"), text=f"Tiempo de espera: {Fifo(procesos)[1]}", font=self.fuente1)
             self.label_fifo.pack(pady=20)
-            self.label_fifo = ctk.CTkLabel(self.TabView.tab("FIFO"), text=f"Tiempo de sistema: {Fifo(procesos)[2]}")
+            self.label_fifo = ctk.CTkLabel(self.TabView.tab("FIFO"), text=f"Tiempo de sistema: {Fifo(procesos)[2]}", font=self.fuente1)
             self.label_fifo.pack(pady=20)
 
             #Crear un link para ver abrir el diagrama de gantt en el navegador, solo se ejecuta si se hace click en el link
-            self.link= ctk.CTkLabel(self.TabView.tab("FIFO"), text="Ver diagrama de Gantt", text_color="blue", cursor="hand2")
+            self.link= ctk.CTkLabel(self.TabView.tab("FIFO"), text="Abrir en navegador", text_color="lightblue", cursor="hand2", font=self.fuente1)
             self.link.pack(pady=20)
 
            # link=fig.show()
@@ -108,13 +115,13 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
             self.labelsjf.configure(image=img_tk, text="")
             self.labelsjf.pack(pady=20)
             #Crear un label para mostrar el tiempo de espera y de sistema
-            self.label_sjf = ctk.CTkLabel(self.TabView.tab("SJF"), text=f"Tiempo de espera: {SJF(procesos)[1]}")
+            self.label_sjf = ctk.CTkLabel(self.TabView.tab("SJF"), text=f"Tiempo de espera: {SJF(procesos)[1]}", font=self.fuente1)
             self.label_sjf.pack(pady=20)
-            self.label_sjf = ctk.CTkLabel(self.TabView.tab("SJF"), text=f"Tiempo de sistema: {SJF(procesos)[2]}")
+            self.label_sjf = ctk.CTkLabel(self.TabView.tab("SJF"), text=f"Tiempo de sistema: {SJF(procesos)[2]}", font=self.fuente1)
             self.label_sjf.pack(pady=20)
 
             #Crear un link para ver abrir el diagrama de gantt en el navegador, solo se ejecuta si se hace click en el link
-            self.link= ctk.CTkLabel(self.TabView.tab("SJF"), text="Ver diagrama de Gantt", text_color="blue", cursor="hand2")
+            self.link= ctk.CTkLabel(self.TabView.tab("SJF"), text="Abrir en navegador", text_color="lightblue", cursor="hand2", font=self.fuente1)
             self.link.pack(pady=20)
 
            # link=fig.show()
@@ -126,18 +133,30 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
             self.labelprioridad.configure(image=img_tk, text="")
             self.labelprioridad.pack(pady=20)
             #Crear un label para mostrar el tiempo de espera y de sistema
-            self.label_prioridad = ctk.CTkLabel(self.TabView.tab("Prioridad"), text=f"Tiempo de espera: {Prioridad(procesos)[1]}")
+            self.label_prioridad = ctk.CTkLabel(self.TabView.tab("Prioridad"), text=f"Tiempo de espera: {Prioridad(procesos)[1]}", font=self.fuente1)
             self.label_prioridad.pack(pady=20)
-            self.label_prioridad = ctk.CTkLabel(self.TabView.tab("Prioridad"), text=f"Tiempo de sistema: {Prioridad(procesos)[2]}")
+            self.label_prioridad = ctk.CTkLabel(self.TabView.tab("Prioridad"), text=f"Tiempo de sistema: {Prioridad(procesos)[2]}", font=self.fuente1)
             self.label_prioridad.pack(pady=20)
 
             #Crear un link para ver abrir el diagrama de gantt en el navegador, solo se ejecuta si se hace click en el link
-            self.link= ctk.CTkLabel(self.TabView.tab("Prioridad"), text="Ver diagrama de Gantt", text_color="blue", cursor="hand2")
+            self.link= ctk.CTkLabel(self.TabView.tab("Prioridad"), text="Abrir en navegador", text_color="lightblue", cursor="hand2", font=self.fuente1)
             self.link.pack(pady=20)
 
            # link=fig.show()
 
             self.link.bind("<Button-1>", lambda e: webbrowser.open('gantt.html')) 
+
+    def on_closing(self):
+        msg = CTkMessagebox(title="Salir?", message="Desea cerrar las gráficas?",
+                        icon="question", option_1="No", option_2="Si")
+        response = msg.get()
+    
+        if response=="Si":
+            #pygame.mixer.init()
+            #pygame.mixer.music.load("mario64.mp3")
+            #pygame.mixer.music.play()
+            #self.after(1000, self.quit)  # Cierra toda la aplicación
+            self.destroy()
 
 if __name__ == "__main__":
     procesos = [Proceso("P1", 0, 6, 2), Proceso("P2", 1, 4, 1), Proceso("P3", 2, 2, 0), Proceso("P4", 3, 3, 1)]
