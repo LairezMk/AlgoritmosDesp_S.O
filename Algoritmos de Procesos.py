@@ -12,50 +12,48 @@ import cv2
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
-        ctk.set_appearance_mode("light")  # Modo oscuro para una apariencia más moderna
-        #ctk.set_default_color_theme("Hades.json")
+        ctk.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
+        ctk.set_default_color_theme("ThemeCoffee.json")
         self.title("Algoritmos de Procesos")
         self.geometry("600x480")
         self.resizable(False, False)
 
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
-
-
-        side_img_data = Image.open("side-img.png")
+        side_img_data = Image.open("Img-Cafe.png")
         side_img = CTkImage(dark_image=side_img_data, light_image=side_img_data, size=(600, 100))  # Ajustamos el tamaño de la imagen
 
         # Agregar la imagen en la parte superior
         CTkLabel(self, text="", image=side_img).pack(fill="x", side="top")
 
-        frame = ctk.CTkFrame(self, width=600, height=380, fg_color="gray25", corner_radius=0)
+        frame = ctk.CTkFrame(self, width=600, height=380, corner_radius=0)
         frame.pack_propagate(0)  # Evita que el frame se redimensione
         frame.pack(fill="both", expand=True)  
 
         # Título
-        self.label = ctk.CTkLabel(master=frame, text="Algoritmos de Procesos", font=("Arial", 24), text_color="white")
+        self.label = ctk.CTkLabel(master=frame, text="Algoritmos de Procesos", font=("Arial", 24))
         self.label.pack(pady=20)
         
-        self.button_iniciar = ctk.CTkButton(master=frame, text="Iniciar", font=("Arial", 18), fg_color="#ca04ca", border_width=2,
-                                            hover_color="#6a166a", border_color="white", command=self.abrir_grafica)
+        self.button_iniciar = ctk.CTkButton(master=frame, text="Iniciar", font=("Arial", 18),
+                                             command=self.abrir_grafica)
         self.button_iniciar.pack(pady=20)
         
-        self.button_salir = ctk.CTkButton(master=frame, text="Salir", font=("Arial", 18), fg_color="#ca04ca", border_width=2,
-                                            hover_color="#6a166a", border_color="white", command=self.on_closing)
+        self.button_salir = ctk.CTkButton(master=frame, text="Salir", font=("Arial", 18),
+                                          command=self.on_closing)
         self.button_salir.pack(pady=20)
 
         icon_fifo = CTkImage(Image.open("fifo.png"), size=(50, 50))
         icon_sjf = CTkImage(Image.open("sjf.png"), size=(50, 50))
         icon_prio = CTkImage(Image.open("prioridad.png"), size=(50, 50))
 
-        frame_icons = ctk.CTkFrame(master=frame, fg_color="gray25", corner_radius=8)
+        frame_icons = ctk.CTkFrame(master=frame, corner_radius=8)
         frame_icons.pack(pady=10)
 
         CTkLabel(frame_icons, text=" FIFO ", image=icon_fifo).pack(side="left", padx=10)
         CTkLabel(frame_icons, text=" SJF ", image=icon_sjf).pack(side="left", padx=10)
         CTkLabel(frame_icons, text=" Prioridad ", image=icon_prio).pack(side="left", padx=10)
 
-        frame_info = ctk.CTkFrame(master=frame, fg_color="gray25", corner_radius=8)
+        frame_info = ctk.CTkFrame(master=frame, corner_radius=8)
         frame_info.pack(side="bottom", anchor="se", padx=5, pady=5)
 
         label_autor = ctk.CTkLabel(frame_info, text="Desarrollado por:\nSamuel Herrera \nJonathan Gaviria", font=("Arial", 12), justify="left",
@@ -63,7 +61,7 @@ class App(ctk.CTk):
         label_autor.pack(padx=10, pady=5)
 
         switch = ctk.CTkSwitch(master=frame, text="Modo Oscuro", command=self.cambiar_modo, font=("Arial", 14), text_color="white", 
-                               fg_color=["gray", "#6a166a"], bg_color="gray25", button_color="#ca04ca",corner_radius=10)
+                               corner_radius=10)
         switch.pack(pady=10)
         
         self.set_icon("Windows.jpg")
@@ -104,21 +102,26 @@ class App(ctk.CTk):
 class Grafica(ctk.CTkToplevel):
     def __init__(self, root):
         super().__init__(root)
+        ctk.set_default_color_theme("ThemeCoffee.json")
         self.root = root
         self.title("Graficar")
-        self.geometry("800x600")
+        self.geometry("600x400")
         self.resizable(False, False)
+
+        frame = ctk.CTkFrame(self, width=600, height=400, corner_radius=0)
+        frame.pack_propagate(0)  # Evita que el frame se redimensione
+        frame.pack(fill="both", expand=True) 
         
-        self.label = ctk.CTkLabel(self, text="Ingrese la cantidad de procesos (máx 10)", font=("Arial", 20))
+        self.label = ctk.CTkLabel(master=frame, text="Ingrese la cantidad de procesos (máx 10)", font=("Arial", 20))
         self.label.pack(pady=20)
         
-        self.num_procesos = ctk.CTkEntry(self, font=("Arial", 20))
+        self.num_procesos = ctk.CTkEntry(master=frame, font=("Arial", 20))
         self.num_procesos.pack(pady=10)
         
-        self.button_ejecutar = ctk.CTkButton(self, text="Ejecutar Algoritmo", font=("Arial", 15), command=self.ejecutar_algoritmo)
+        self.button_ejecutar = ctk.CTkButton(master=frame, text="Ejecutar Algoritmo", font=("Arial", 15), command=self.ejecutar_algoritmo)
         self.button_ejecutar.pack(pady=20)
         
-        self.button_volver = ctk.CTkButton(self, text="Volver al inicio", font=("Arial", 15), fg_color="gray", hover_color="darkgray", command=self.volver_inicio)
+        self.button_volver = ctk.CTkButton(master=frame, text="Volver al inicio", font=("Arial", 15), command=self.volver_inicio)
         self.button_volver.pack(pady=20)
     
     def ejecutar_algoritmo(self):
@@ -146,13 +149,12 @@ class Grafica(ctk.CTkToplevel):
     def volver_inicio(self):
         self.destroy()
         self.root.deiconify()
-        
 
 class Procesos(ctk.CTkToplevel):
     def __init__(self, root, num_procesos):
         super().__init__(root)
         self.title("Procesos")
-        self.geometry("800x1000")
+        self.geometry("800x600")
         self.resizable(False, False)
         self.root= root
 
@@ -163,47 +165,52 @@ class Procesos(ctk.CTkToplevel):
         self.proceso_actual = 0
         self.Lprocesos = []  # Lista de procesos
 
+        frameizq = ctk.CTkFrame(self, width=380, height=580, border_width=2, border_color="white")
+        frameizq.pack_propagate(0)  # Evita que el frame se redimensione
+        frameizq.grid(row=0, column=0, padx=10, pady=10)
+
+        self.frameder = ctk.CTkFrame(self, width=380, height=580, border_width=2, border_color="white")
+        self.frameder.pack_propagate(0)  # Evita que el frame se redimensione
+        self.frameder.grid(row=0, column=1, padx=10, pady=10)
+
         # Crear la interfaz
-        self.label_titulo = ctk.CTkLabel(self, text="", font=("Arial", 20))
+        self.label_titulo = ctk.CTkLabel(frameizq, text="", font=("Arial", 20))
         self.label_titulo.pack(pady=10)
 
-        self.label_nombre = ctk.CTkLabel(self, text="Ingrese el nombre del proceso:", font=("Arial", 15))
+        self.label_nombre = ctk.CTkLabel(frameizq, text="Ingrese el nombre del proceso:", font=("Arial", 15))
         self.label_nombre.pack(pady=5)
         #Hacer que el nombre solo pueda ser de maximo 2 caracteres
-        self.entry_nombre = ctk.CTkEntry(self, font=("Arial", 15))
+        self.entry_nombre = ctk.CTkEntry(frameizq, font=("Arial", 15))
         self.entry_nombre.pack(pady=5)
 
-        self.label_llegada = ctk.CTkLabel(self, text="Ingrese el tiempo de llegada del proceso:", font=("Arial", 15))
+        self.label_llegada = ctk.CTkLabel(frameizq, text="Ingrese el tiempo de llegada del proceso:", font=("Arial", 15))
         self.label_llegada.pack(pady=5)
-        self.entry_llegada = ctk.CTkEntry(self, font=("Arial", 15))
+        self.entry_llegada = ctk.CTkEntry(frameizq, font=("Arial", 15))
         self.entry_llegada.pack(pady=5)
 
-        self.label_rafaga = ctk.CTkLabel(self, text="Ingrese la ráfaga del proceso:", font=("Arial", 15))
+        self.label_rafaga = ctk.CTkLabel(frameizq, text="Ingrese la ráfaga del proceso:", font=("Arial", 15))
         self.label_rafaga.pack(pady=5)
-        self.entry_rafaga = ctk.CTkEntry(self, font=("Arial", 15))
+        self.entry_rafaga = ctk.CTkEntry(frameizq, font=("Arial", 15))
         self.entry_rafaga.pack(pady=5)
 
-        self.label_prioridad = ctk.CTkLabel(self, text="Ingrese la prioridad del proceso:", font=("Arial", 15))
+        self.label_prioridad = ctk.CTkLabel(frameizq, text="Ingrese la prioridad del proceso:", font=("Arial", 15))
         self.label_prioridad.pack(pady=5)
-        self.entry_prioridad = ctk.CTkEntry(self, font=("Arial", 15))
+        self.entry_prioridad = ctk.CTkEntry(frameizq, font=("Arial", 15))
         self.entry_prioridad.pack(pady=5)
 
-        self.boton_guardar = ctk.CTkButton(self, text="Guardar", font=("Arial", 15), command=self.guardar_proceso)
+        self.boton_guardar = ctk.CTkButton(frameizq, text="Guardar", font=("Arial", 15), command=self.guardar_proceso)
         self.boton_guardar.pack(pady=20)
 
-        self.boton_volver= ctk.CTkButton(self, text="Volver al inicio", font=("Arial", 15), command=self.volver_inicio)
+        self.boton_volver= ctk.CTkButton(frameizq, text="Volver al inicio", font=("Arial", 15), command=self.volver_inicio)
         self.boton_volver.pack(pady=20)
 
-
         #Sección para la ejecución del video
-        self.canvas=ctk.CTkCanvas(self, width=300, height=300)
-        self.canvas.pack(pady=20)
+        self.canvas=ctk.CTkCanvas(self.frameder, width=300, height=300)
+        self.canvas.pack(pady=150)
         video=cv2.VideoCapture("shimmy.mp4")
         self.video=video
         self.actualizar_video()
         self.actualizar_interfaz()
-
-
 
     def actualizar_interfaz(self):
         """Actualiza la interfaz para el proceso actual"""
@@ -220,13 +227,10 @@ class Procesos(ctk.CTkToplevel):
         self.entry_rafaga.delete(0, "end")
         self.entry_prioridad.delete(0, "end")
 
-        
-
-
     def actualizar_video(self):   
         #Actualizar los fotogramas del video
 
-        ret, frame=self.video.read()
+        ret, frame = self.video.read()
 
         if ret:
             frame=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -256,7 +260,7 @@ class Procesos(ctk.CTkToplevel):
 
         if self.proceso_actual <= self.num_procesos:
             #Hacer que el mensaje de guardado desaparezca después de 2 segundos automaticamente
-            self.label_mensaje = ctk.CTkLabel(self, text="Proceso guardado correctamente.", font=("Arial", 14))
+            self.label_mensaje = ctk.CTkLabel(self.frameder, text="Proceso guardado correctamente.", font=("Arial", 14))
             self.label_mensaje.pack(pady=5)
             self.after(2000, self.label_mensaje.destroy)  # Desaparece en 2 segundos
             #self.actualizar_interfaz()
