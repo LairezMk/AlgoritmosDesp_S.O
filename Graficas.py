@@ -63,7 +63,7 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
         df = pd.DataFrame(procesos_data)
 
         # Crear la gráfica de Gantt
-        fig = ff.create_gantt(df, index_col="Task", show_colorbar=False, group_tasks=True)
+        fig = ff.create_gantt(df, index_col="Task", show_colorbar=False, group_tasks=True, title=f"Diagrama de Gantt - {algoritmo}")
         fig.update_layout(xaxis_type='linear', autosize=True, width=700, height=300)
         fig.update_xaxes(title="Tiempo (segundos)", dtick=1)  # Especificar eje X como numérico
         fig.update_yaxes(title="Procesos")
