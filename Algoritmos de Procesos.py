@@ -203,6 +203,23 @@ class Procesos(ctk.CTkToplevel):
         self.actualizar_video()
         self.actualizar_interfaz()
 
+        self.entries = [self.entry_nombre, self.entry_llegada, self.entry_rafaga, self.entry_prioridad]
+
+        # Asociar eventos a cada Entry
+        for i, entry in enumerate(self.entries):
+            entry.bind("<Return>", lambda event, idx=i: self.focus_next(idx))  # Enter para avanzar
+            entry.bind("<Up>", lambda event, idx=i: self.focus_previous(idx))  # Flecha arriba
+            entry.bind("<Down>", lambda event, idx=i: self.focus_next(idx))    # Flecha abajo
+
+    def focus_next(self, index):
+        """ Mueve el foco al siguiente campo """
+        if index + 1 < len(self.entries):
+            self.entries[index + 1].focus_set()
+
+    def focus_previous(self, index):
+        """ Mueve el foco al campo anterior """
+        if index - 1 >= 0:
+            self.entries[index - 1].focus_set()
 
 
     def actualizar_interfaz(self):

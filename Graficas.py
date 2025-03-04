@@ -12,7 +12,7 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
     def __init__(self, procesos):
         super().__init__()
         self.title("Graficar")
-        self.geometry("800x600")
+        self.geometry("800x800")
         self.resizable(False, False)
         self.procesos = procesos
 
