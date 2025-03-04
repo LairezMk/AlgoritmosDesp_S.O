@@ -332,11 +332,8 @@ class Procesos(ctk.CTkToplevel):
         if self.mensaje.get()=="Ok":
             #self.withdraw()
             Mostrar_Procesos(self.Lprocesos)
-            #si se cierra la venta de Mostrar_Procesos, se quita el withraw y se muestra la ventana de Procesos
-            #if Mostrar_Procesos(self.Lprocesos).destroy():
-
-            #    self.deiconify()
-    
+            self.destroy()
+            self.volver_inicio()
 
             
 
