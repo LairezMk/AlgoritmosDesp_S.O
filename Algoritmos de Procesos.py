@@ -182,6 +182,8 @@ class Procesos(ctk.CTkToplevel):
         #Hacer que el nombre solo pueda ser de maximo 2 caracteres
         self.entry_nombre = ctk.CTkEntry(frameizq, font=("Bevan", 15))
         self.entry_nombre.pack(pady=5)
+        vcmd = (self.register(self.validar_longitud), "%P")
+        self.entry_nombre.configure(validate="key", validatecommand=vcmd)
 
         self.label_llegada = ctk.CTkLabel(frameizq, text="Ingrese el tiempo de llegada del proceso:", font=("Bevan", 15))
         self.label_llegada.pack(pady=5)
@@ -221,15 +223,18 @@ class Procesos(ctk.CTkToplevel):
             entry.bind("<Down>", lambda event, idx=i: self.focus_next(idx))    # Flecha abajo
 
     def focus_next(self, index):
-        """ Mueve el foco al siguiente campo """
+        """ Mueve el cursos al siguiente campo """
         if index + 1 < len(self.entries):
             self.entries[index + 1].focus_set()
 
     def focus_previous(self, index):
-        """ Mueve el foco al campo anterior """
+        """ Mueve el cursos al campo anterior """
         if index - 1 >= 0:
             self.entries[index - 1].focus_set()
 
+    def validar_longitud(self, P):
+        #Valida la longitud del texto ingresado 
+        return len(P) <= 2
 
     def actualizar_interfaz(self):
         """Actualiza la interfaz para el proceso actual"""
