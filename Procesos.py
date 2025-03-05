@@ -52,7 +52,7 @@ def Fifo(procesos): #Funcion que implementa el algoritmo FIFO
                 tiempo_espera += tiempo_ejecucion - proceso.tiempo_llegada #Calculo el tiempo de espera
                 tiempo_ejecucion += proceso.rafaga #Calculo el tiempo de ejecucion
                 
-                proceso.tiempo_inicio += tiempo_ejecucion - proceso.rafaga #Calculo el tiempo de inicio del proceso
+                proceso.tiempo_inicio = tiempo_ejecucion - proceso.rafaga #Calculo el tiempo de inicio del proceso
 
                 tiempo_sistema = tiempo_ejecucion - proceso.tiempo_llegada #Calculo el tiempo de sistema
                     
@@ -92,12 +92,10 @@ def Prioridad(procesos): #Funcion que implementa el algoritmo de prioridad
     #Nuevo Comentario
 
 #Ejemplo
-
-procesos = [Proceso("P1", 0, 6, 1), Proceso("P2", 1, 6, 2), Proceso("P3", 2, 3, 0)]
-procesos = Fifo(procesos)[0]
-
-for proceso in procesos:
-    print(f"Proceso: {proceso.nombre} - Tiempo de llegada: {proceso.tiempo_llegada} - Rafaga: {proceso.rafaga} - Tiempo de inicio: {proceso.tiempo_inicio} - Tiempo final: {proceso.tiempo_final}")
+#procesos = [Proceso("P1", 0, 6, 2), Proceso("P2", 1, 4, 1), Proceso("P3", 2, 2, 0), Proceso("P4", 3, 3, 1)]
+#procesos = Fifo(procesos)[0]
+#for proceso in procesos:
+#    print(f"Proceso: {proceso.nombre} - Tiempo de llegada: {proceso.tiempo_llegada} - Rafaga: {proceso.rafaga} - Tiempo de inicio: {proceso.tiempo_inicio} - Tiempo final: {proceso.tiempo_final}")
 
 
 
