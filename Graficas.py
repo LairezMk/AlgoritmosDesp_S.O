@@ -55,6 +55,9 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
             # Calcular el tiempo de espera y de sistema para el algoritmo SJF
             procesos = SJF(procesos)[0]
 
+            for proceso in procesos:
+                print(proceso.nombre, proceso.tiempo_inicio, proceso.tiempo_final)
+
         elif algoritmo == "Prioridad":
             # Calcular el tiempo de espera y de sistema para el algoritmo de prioridad
             procesos = Prioridad(procesos)[0]
