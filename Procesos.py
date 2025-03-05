@@ -97,6 +97,12 @@ def Prioridad(procesos): #Funcion que implementa el algoritmo de prioridad
 #for proceso in procesos:
 #    print(f"Proceso: {proceso.nombre} - Tiempo de llegada: {proceso.tiempo_llegada} - Rafaga: {proceso.rafaga} - Tiempo de inicio: {proceso.tiempo_inicio} - Tiempo final: {proceso.tiempo_final}")
 
+#procesos = [Proceso("P1", 0, 6, 2), Proceso("P2", 1, 4, 1), Proceso("P3", 2, 2, 0), Proceso("P4", 3, 3, 1)]
+#procesos = Fifo(procesos)[0]
+
+#for proceso in procesos:
+#    print(f"Proceso: {proceso.nombre} - Tiempo de llegada: {proceso.tiempo_llegada} - Rafaga: {proceso.rafaga} - Tiempo de inicio: {proceso.tiempo_inicio} - Tiempo final: {proceso.tiempo_final}")
+
 
 
 
