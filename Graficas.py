@@ -46,8 +46,6 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
 
     def generar_grafica(self, procesos, algoritmo):
 
-    
-
         if algoritmo == "FIFO":
             # Calcular el tiempo de espera y de sistema para el algoritmo FIFO
             procesos.sort(key=lambda x: x.tiempo_llegada)
@@ -76,12 +74,10 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
         fig.update_yaxes(title="Procesos")
 
         #fig.show()
-        
 
         #Obtener el link para abrir la gráfica en el navegador
 
         pio.write_html(fig, file='gantt.html', auto_open=False)
-
         
         # Convertir la gráfica a imagen
         img_bytes = pio.to_image(fig, format="png")
@@ -107,8 +103,6 @@ class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gr
            # link=fig.show()
 
             self.link.bind("<Button-1>", lambda e: webbrowser.open('gantt.html')) 
-
-
 
         elif algoritmo == "SJF":
             # Actualizar el label con la imagen en la pestaña SJF

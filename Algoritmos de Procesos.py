@@ -335,9 +335,6 @@ class Procesos(ctk.CTkToplevel):
             self.destroy()
             self.volver_inicio()
 
-            
-
-
     def volver_inicio(self):
         self.destroy()
         Grafica(self.root)

@@ -34,11 +34,15 @@ def Fifo(procesos): #Funcion que implementa el algoritmo FIFO
     tiempo_sistema = 0 #Me permite conocer el tiempo de sistema de todos los procesos
     total = 0 #Me permite conocer el tiempo total de ejecucion de todos los procesos
 
+    for proceso in fifo_list: #Recorro la lista de procesos
+        total += proceso.rafaga #Sumo el tiempo de ejecucion de cada proceso 
+
     while (total > 0): #Mientras el tiempo total sea mayor a 0
 
         pasar_segundo = True #Variable que me permite saber si puedo avanzar un segundo en el tiempo de ejecucion
 
         for proceso in fifo_list:
+
             if(tiempo_ejecucion >= proceso.tiempo_llegada): #Verifico si el proceso ya existe )
 
                 pasar_segundo = False
@@ -48,9 +52,9 @@ def Fifo(procesos): #Funcion que implementa el algoritmo FIFO
                 tiempo_espera += tiempo_ejecucion - proceso.tiempo_llegada #Calculo el tiempo de espera
                 tiempo_ejecucion += proceso.rafaga #Calculo el tiempo de ejecucion
                 
-                proceso.tiempo_inicio = tiempo_ejecucion - proceso.rafaga #Calculo el tiempo de inicio del proceso
+                proceso.tiempo_inicio += tiempo_ejecucion - proceso.rafaga #Calculo el tiempo de inicio del proceso
 
-                tiempo_sistema += tiempo_ejecucion - proceso.tiempo_llegada #Calculo el tiempo de sistema
+                tiempo_sistema = tiempo_ejecucion - proceso.tiempo_llegada #Calculo el tiempo de sistema
                     
                 total -= proceso.rafaga #Resto el tiempo de ejecucion del proceso al tiempo total
                     
@@ -89,9 +93,12 @@ def Prioridad(procesos): #Funcion que implementa el algoritmo de prioridad
 
 #Ejemplo
 
-#procesos = [Proceso("P1", 0, 6), Procesos("P2", 1, 6), Procesos("P3", 2, 3)]
+procesos = [Proceso("P1", 0, 6, 1), Proceso("P2", 1, 6, 2), Proceso("P3", 2, 3, 0)]
+procesos = Fifo(procesos)[0]
 
-#Fifo(procesos)
+for proceso in procesos:
+    print(f"Proceso: {proceso.nombre} - Tiempo de llegada: {proceso.tiempo_llegada} - Rafaga: {proceso.rafaga} - Tiempo de inicio: {proceso.tiempo_inicio} - Tiempo final: {proceso.tiempo_final}")
+
 
 
 
