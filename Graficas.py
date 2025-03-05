@@ -1,14 +1,14 @@
 import pandas as pd
 import plotly.io as pio
 from PIL import Image, ImageTk
-import tkinter as tk
+#import tkinter as tk
 import customtkinter as ctk 
 from io import BytesIO
 import plotly.figure_factory as ff
 from Procesos import *
 import webbrowser
 from CTkMessagebox import CTkMessagebox
-import pygame
+#import pygame
 
 class Mostrar_Procesos(ctk.CTkToplevel):  # Clase para mostrar la ventana con gráficos
     def __init__(self, procesos):
